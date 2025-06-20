@@ -1,7 +1,7 @@
 from kafka_producer import *
 import confluent_kafka
 
-PLAINTEXT_PORTS = 2176
+PLAINTEXT_PORTS = 9092
 TOPIC = "mock_l1_stream"
 
 # Consumes stream, applies allocator logic

@@ -1,0 +1,8 @@
+# Start up the Kafka image and specify a constant PLAINTEXT port to use in our scripts.
+services:
+  broker:
+    image: apache/kafka:latest
+    container_name: broker
+    environment:
+      KAFKA_LISTENERS: PLAINTEXT://localhost:9092,CONTROLLER://localhost:9093
+
