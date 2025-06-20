@@ -4,5 +4,9 @@ services:
     image: apache/kafka:latest
     container_name: broker
     environment:
+      KAFKA_PROCESS_ROLES: broker
       KAFKA_LISTENERS: PLAINTEXT://localhost:9092,CONTROLLER://localhost:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+  pyscript:
+    image:
 

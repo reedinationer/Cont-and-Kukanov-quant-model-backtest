@@ -26,12 +26,8 @@ Wrap up docker install with adjusting user permissions so docker can be run with
     sudo usermod -aG docker $USER
     newgrp docker
 
-Pull the Kafka image with 
-
-    docker pull apache/kafka
-
-Or alternatively, as described in the documentation https://hub.docker.com/r/apache/kafka,
-a Kafka broker can be started with 
+Pull the Kafka image as described in the documentation https://hub.docker.com/r/apache/kafka.
+A Kafka broker can be started with 
 
     docker run -d --name broker apache/kafka:latest
 
@@ -39,34 +35,21 @@ Next, start a shell inside the container so we can add a topic
 
     docker exec --workdir /opt/kafka/bin/ -it broker sh
 
-We will create a topic "mock_l1_stream" within our Kafka broker
+We will create the topic "mock_l1_stream" within our Kafka broker
 
     ./kafka-topics.sh --bootstrap-server localhost:9092 --create --topic mock_l1_stream
 
-Follow the steps outlined here to install Confluent
-https://docs.confluent.io/confluent-cli/current/install.html
+Now we install git and pull the repository
 
-Start a Kafka broker as described here
-https://developer.confluent.io/get-started/python/#kafka-setup
-with the command
-
-`confluent local kafka start`
-
-Note the plaintext ports section of the output from the previous command.
-
-
-| Kafka REST Port | 8082  |
-
-| Plaintext Ports | 12612 |
+    sudo apt install git
+    cd ~
+    mkdir QuantModel
+    cd QuantModel/
+    git init
+    git remote add origin https://github.com/reedinationer/Cont-and-Kukanov-quant-model-backtest.git
+    git pull origin main
 
 
-Create a kafka topic called "mock_l1_stream" by following this command
-
-`confluent local kafka topic create mock_l1_stream`
-
-When done, close the session with
-
-`confluent local kafka stop`
 
 # Approach
 
