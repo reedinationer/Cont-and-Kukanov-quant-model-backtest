@@ -30,14 +30,14 @@ services:
       broker:
         condition: service_started
     entrypoint: [ '/bin/sh', '-c' ]
-    command: ["/opt/bitnami/kafka/bin/kafka-topics.sh", "--bootstrap-server", "broker:9092", "--create", "--topic", "mock_l1_stream", "--replication-factor", "1", "--partitions", "1"]
+    command: ["/opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server broker:9092 --create --if-not-exists --topic mock_l1_stream --replication-factor 1 --partitions 1"]
 #    command: |
 #      "
 #      # blocks until kafka is reachable
 #      kafka-topics --bootstrap-server broker:9092  --list
 #
 #      echo -e 'Creating kafka topics'
-#      kafka-topics --bootstrap-server broker:9092  --create --if-not-exists --topic mock_l1_stream --replication-factor 1 --partitions 1
+#      kafka-topics                                    --bootstrap-server broker:9092  --create --if-not-exists --topic mock_l1_stream --replication-factor 1 --partitions 1
 #
 #      echo -e 'Successfully created the following topics:'
 #      kafka-topics --bootstrap-server broker:9092  --list
