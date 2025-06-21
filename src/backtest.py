@@ -23,6 +23,7 @@ class KafkaConsumer:
 def producer_func():
 	print("Starting thread...")
 	producer = KafkaProducer()
+	return producer
 
 if __name__ == "__main__":
 	t = Thread(target=producer_func) # Make a process to generate items into Kafka
