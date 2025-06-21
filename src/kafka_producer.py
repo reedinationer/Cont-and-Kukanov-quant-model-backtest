@@ -36,6 +36,7 @@ class KafkaProducer:
 		with open(CSV_FILE, "r") as csv_file:
 			reader = csv.DictReader(csv_file)
 			t = None # Initialize time a null, and set it during the first loop
+			print("Sending data to Kafka broker")
 			for row in reader:
 				# First, simulate real-time pacing using deltas of ts_event
 				if t is None:
