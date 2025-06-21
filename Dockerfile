@@ -16,8 +16,9 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # the application crashes without emitting any logs due to buffering.
 ENV PYTHONUNBUFFERED=1
 RUN mkdir /py_src
-COPY /src /py_src/
 WORKDIR /py_src
+COPY . /py_src/
+
 
 # Create a non-privileged user that the app will run under.
 # See https://docs.docker.com/go/dockerfile-user-best-practices/
@@ -43,4 +44,4 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 USER appuser
 
 # Run the application.
-CMD python backtest.py
+CMD python src/backtest.py
