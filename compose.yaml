@@ -23,25 +23,29 @@ services:
       - "9092:9092"
 
   init-kafka:
-    image: confluentinc/cp-kafka:6.1.1
+    image: bitnami/kafka:latest
+    hostname: init
     container_name: init
     depends_on:
-      - broker
+      broker:
+        condition: service_started
     entrypoint: [ '/bin/sh', '-c' ]
-    command: |
-      "
-      # blocks until kafka is reachable
-      kafka-topics --bootstrap-server broker:9092  --list
-      
-      echo -e 'Creating kafka topics'
-      kafka-topics --bootstrap-server broker:9092  --create --if-not-exists --topic mock_l1_stream --replication-factor 1 --partitions 1
-      
-      echo -e 'Successfully created the following topics:'
-      kafka-topics --bootstrap-server broker:9092  --list
-      "
+    command: ["/opt/bitnami/kafka/bin/kafka-topics.sh", "--create", "--bootstrap-server", "broker:9092", "--replication-factor", "1", "--partitions", "1", "--topic", "mock_l1_stream"]
+#    command: |
+#      "
+#      # blocks until kafka is reachable
+#      kafka-topics --bootstrap-server broker:9092  --list
+#
+#      echo -e 'Creating kafka topics'
+#      kafka-topics --bootstrap-server broker:9092  --create --if-not-exists --topic mock_l1_stream --replication-factor 1 --partitions 1
+#
+#      echo -e 'Successfully created the following topics:'
+#      kafka-topics --bootstrap-server broker:9092  --list
+#      "
 
   pyscript:
     build: . # Build this project to interact with our kafka broker
     container_name: pyscript
     depends_on:
-      - init-kafka
+      init-kafka:
+        condition: service_completed_successfully
