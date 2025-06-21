@@ -2,8 +2,7 @@ from kafka_producer import KafkaProducer
 from confluent_kafka import Consumer
 from threading import Thread
 
-
-PLAINTEXT_PORTS = 9092
+KAFKA_SERVER = "75.142.225.183:9092"
 TOPIC = "mock_l1_stream"
 CSV_FILE = "reference/l1_day.csv"
 
@@ -19,7 +18,7 @@ class KafkaConsumer:
 	def __init__(self):
 		self.config = {
 			# User-specific properties that you must set
-        'bootstrap.servers': f'localhost:{PLAINTEXT_PORTS}',
+        'bootstrap.servers': f'{KAFKA_SERVER}',
 
         # Fixed properties
         'group.id':          'kafka-python-getting-started',

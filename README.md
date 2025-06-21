@@ -52,15 +52,13 @@ Now we install git and pull the repository
 
 Now use docker to build and run the multi container application
 
+    docker compose build --with-dependencies    
     docker compose up -d
     docker logs broker
-    docker logs quantmodel-pyscript-1 --follow
+    docker logs pyscript --follow
     docker compose down -v
 
-    docker compose build --with-dependencies
 
 # Approach
 
 # Tuning logic
-
-# EC2 setup

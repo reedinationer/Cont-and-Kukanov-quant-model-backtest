@@ -6,7 +6,7 @@ import json
 
 """This file process the data in l1_day.csv and sends it to the Kafka topic mock_l1_stream"""
 
-PLAINTEXT_PORTS = 9092
+KAFKA_SERVER = "75.142.225.183:9092"
 TOPIC = "mock_l1_stream"
 CSV_FILE = "reference/l1_day.csv"
 # Use the time range `13:36:32` to `13:45:14 UTC` from the dataset as the window for simulation and evaluation.
@@ -28,7 +28,7 @@ class KafkaProducer:
 	def __init__(self):
 		print("Starting KafkaProducer")
 		self.config = {
-	        'bootstrap.servers': f'localhost:{PLAINTEXT_PORTS}',
+	        'bootstrap.servers': f'{KAFKA_SERVER}',
 	        'acks': 'all' # Make sure all followers acknowledge for maximum redundancy
         }
 		self.producer = Producer(self.config)

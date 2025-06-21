@@ -7,11 +7,11 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
-      KAFKA_LISTENERS: PLAINTEXT://localhost:9092,CONTROLLER://localhost:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENERS: PLAINTEXT://75.142.225.183:9092,CONTROLLER://75.142.225.183:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://75.142.225.183:9092
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@75.142.225.183:9093
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
@@ -30,13 +30,13 @@ services:
     command: |
       "
       # blocks until kafka is reachable
-      kafka-topics --bootstrap-server broker:9092  --list
+      kafka-topics --bootstrap-server 75.142.225.183:9092  --list
       
       echo -e 'Creating kafka topics'
-      kafka-topics --bootstrap-server broker:9092  --create --if-not-exists --topic mock_l1_stream --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server 75.142.225.183:9092  --create --if-not-exists --topic mock_l1_stream --replication-factor 1 --partitions 1
       
       echo -e 'Successfully created the following topics:'
-      kafka-topics --bootstrap-server broker:9092  --list
+      kafka-topics --bootstrap-server 75.142.225.183:9092  --list
       "
 
   pyscript:
