@@ -30,7 +30,7 @@ services:
       broker:
         condition: service_started
     entrypoint: [ '/bin/sh', '-c' ]
-    command: ["/opt/bitnami/kafka/bin/kafka-topics.sh", "--create", "--bootstrap-server", "broker:9092", "--replication-factor", "1", "--partitions", "1", "--topic", "mock_l1_stream"]
+    command: ["/opt/bitnami/kafka/bin/kafka-topics.sh", "--bootstrap-server", "broker:9092", "--create", "--topic", "mock_l1_stream", "--replication-factor", "1", "--partitions", "1"]
 #    command: |
 #      "
 #      # blocks until kafka is reachable
