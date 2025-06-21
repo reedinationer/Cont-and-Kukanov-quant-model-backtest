@@ -5,7 +5,7 @@ from threading import Thread
 
 PLAINTEXT_PORTS = 9092
 TOPIC = "mock_l1_stream"
-CSV_FILE = "../reference/l1_day.csv"
+CSV_FILE = "reference/l1_day.csv"
 
 import csv
 with open(CSV_FILE, "r") as csv_file:
