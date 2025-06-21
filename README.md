@@ -60,7 +60,8 @@ You can verify that the code works with this, but it won't work without the kafk
 
 To make the Kafka broker run simultaneously we can simply run
 
-    docker compose -d up
+    docker compose up -d
+    docker logs broker
 
 
 # Approach
