@@ -2,7 +2,7 @@ from kafka_producer import KafkaProducer
 from confluent_kafka import Consumer
 from threading import Thread
 
-KAFKA_SERVER = "172.31.16.1:9092"
+KAFKA_SERVER = "broker:9092"
 TOPIC = "mock_l1_stream"
 CSV_FILE = "reference/l1_day.csv"
 
