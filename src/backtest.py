@@ -25,7 +25,8 @@ def producer_func():
 	producer = KafkaProducer()
 
 if __name__ == "__main__":
-	p = Thread(target=producer_func) # Make a process to generate items into Kafka
+	t = Thread(target=producer_func) # Make a process to generate items into Kafka
+	t.start()
 	kc = KafkaConsumer() # now we consume items as they are generated
 	try:
 		while True:
@@ -45,6 +46,7 @@ if __name__ == "__main__":
 	finally:
 		# Leave group and commit final offsets
 		kc.consumer.close()
+	t.join()
 	"""Final stdout must print a valid JSON like the format below:
 	{
 	  "best_parameters": {...},
