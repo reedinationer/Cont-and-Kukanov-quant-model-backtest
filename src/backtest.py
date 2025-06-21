@@ -21,6 +21,7 @@ class KafkaConsumer:
 		self.consumer.subscribe([TOPIC])
 
 def producer_func():
+	print("Starting thread...")
 	producer = KafkaProducer()
 
 if __name__ == "__main__":
