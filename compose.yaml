@@ -21,5 +21,6 @@ services:
     ports:
       - "9092:9092"
   pyscript:
-    build: . # Build this project to interact with our kafka
-
+    build: . # Build this project to interact with our kafka broker
+    depends_on:
+      - broker
