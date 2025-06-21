@@ -1,4 +1,4 @@
-import confluent_kafka
+from confluent_kafka import Producer
 import csv
 import datetime
 import time
@@ -31,7 +31,7 @@ class KafkaProducer:
 	        'bootstrap.servers': f'localhost:{PLAINTEXT_PORTS}',
 	        'acks': 'all' # Make sure all followers acknowledge for maximum redundancy
         }
-		self.producer = confluent_kafka.Producer(self.config)
+		self.producer = Producer(self.config)
 		print(f"Parsing file {CSV_FILE}")
 		with open(CSV_FILE, "r") as csv_file:
 			reader = csv.DictReader(csv_file)

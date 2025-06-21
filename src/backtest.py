@@ -1,10 +1,18 @@
 from src.kafka_producer import KafkaProducer
-import confluent_kafka
+from confluent_kafka import Consumer
 from threading import Thread
 
 
 PLAINTEXT_PORTS = 9092
 TOPIC = "mock_l1_stream"
+CSV_FILE = "../reference/l1_day.csv"
+
+import csv
+with open(CSV_FILE, "r") as csv_file:
+	reader = csv.DictReader(csv_file)
+	for row in reader:
+		print(row)
+		break
 
 # Consumes stream, applies allocator logic
 class KafkaConsumer:
@@ -17,7 +25,7 @@ class KafkaConsumer:
         'group.id':          'kafka-python-getting-started',
         'auto.offset.reset': 'earliest'
 		}
-		self.consumer = confluent_kafka.Consumer(self.config)
+		self.consumer = Consumer(self.config)
 		self.consumer.subscribe([TOPIC])
 
 def producer_func():
