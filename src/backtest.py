@@ -1,5 +1,7 @@
-from kafka_producer import *
+from kafka_producer import KafkaProducer
 import confluent_kafka
+import multiprocessing
+
 
 PLAINTEXT_PORTS = 9092
 TOPIC = "mock_l1_stream"
@@ -18,9 +20,12 @@ class KafkaConsumer:
 		self.consumer = confluent_kafka.Consumer(self.config)
 		self.consumer.subscribe([TOPIC])
 
+def producer_func():
+	producer = KafkaProducer()
 
 if __name__ == "__main__":
-	kc = KafkaConsumer()
+	p = multiprocessing.Process(target=producer_func) # Make a process to generate items into Kafka
+	kc = KafkaConsumer() # now we consume items as they are generated
 	try:
 		while True:
 			msg = kc.consumer.poll(1.0)

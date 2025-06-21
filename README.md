@@ -62,6 +62,8 @@ To make the Kafka broker run simultaneously we can simply run
 
     docker compose up -d
     docker logs broker
+    docker logs quantmodel-pyscript-1
+    docker compose down -v
 
 
 # Approach
