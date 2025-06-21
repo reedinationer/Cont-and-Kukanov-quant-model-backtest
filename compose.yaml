@@ -8,5 +8,5 @@ services:
       KAFKA_LISTENERS: PLAINTEXT://localhost:9092,CONTROLLER://localhost:9093
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
   pyscript:
-    image:
+    build: . # Build this project to interact with our kafka
 

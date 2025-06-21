@@ -47,8 +47,20 @@ Now we install git and pull the repository
     cd QuantModel/
     git init
     git remote add origin https://github.com/reedinationer/Cont-and-Kukanov-quant-model-backtest.git
-    git pull origin main
+    git branch --set-upstream-to=origin/main master
+    git pull
 
+Now build this repository into a docker image
+
+    docker build . -t quantmodel
+
+You can verify that the code works with this, but it won't work without the kafka broker being online with it.
+
+    docker run quantmodel
+
+To make the Kafka broker run simultaneously we can simply run
+
+    docker compose -d up
 
 
 # Approach
