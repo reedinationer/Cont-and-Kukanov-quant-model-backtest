@@ -1,4 +1,4 @@
-from src.kafka_producer import KafkaProducer
+from kafka_producer import KafkaProducer
 from confluent_kafka import Consumer
 from threading import Thread
 
