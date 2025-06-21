@@ -9,7 +9,7 @@ import json
 PLAINTEXT_PORTS = 9092
 TOPIC = "mock_l1_stream"
 CSV_FILE = "../reference/l1_day.csv"
-# Use the time range `13:36:32` to `13:45:14 UTC` from the dataset as the window for your simulation and evaluation.
+# Use the time range `13:36:32` to `13:45:14 UTC` from the dataset as the window for simulation and evaluation.
 MIN_TIME = datetime.time(hour=13, minute=36, second=32)
 MAX_TIME = datetime.time(hour=13, minute=45, second=14, microsecond=999999)
 
@@ -26,6 +26,7 @@ def delivery_callback(err, msg):
 
 class KafkaProducer:
 	def __init__(self):
+		print("Starting KafkaProducer")
 		self.config = {
 	        'bootstrap.servers': f'localhost:{PLAINTEXT_PORTS}',
 	        'acks': 'all' # Make sure all followers acknowledge for maximum redundancy
