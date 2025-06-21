@@ -1,6 +1,6 @@
 from kafka_producer import KafkaProducer
 import confluent_kafka
-import multiprocessing
+from threading import Thread
 
 
 PLAINTEXT_PORTS = 9092
@@ -24,7 +24,7 @@ def producer_func():
 	producer = KafkaProducer()
 
 if __name__ == "__main__":
-	p = multiprocessing.Process(target=producer_func) # Make a process to generate items into Kafka
+	p = Thread(target=producer_func) # Make a process to generate items into Kafka
 	kc = KafkaConsumer() # now we consume items as they are generated
 	try:
 		while True:
