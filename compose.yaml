@@ -20,13 +20,27 @@ services:
       KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "true"
     ports:
       - "9092:9092"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "localhost:9092"]
-      start_period: 15s
-      timeout: 10s
+
+  init-kafka:
+    image: confluentinc/cp-kafka:6.1.1
+    depends_on:
+      - broker
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      # blocks until kafka is reachable
+      kafka-topics --bootstrap-server broker:9092  --list
+      
+      echo -e 'Creating kafka topics'
+      kafka-topics --bootstrap-server broker:9092  --create --if-not-exists --topic mock_l1_stream --replication-factor 1 --partitions 1
+      
+      echo -e 'Successfully created the following topics:'
+      kafka-topics --bootstrap-server broker:9092  --list
+      "
+
   pyscript:
     build: . # Build this project to interact with our kafka broker
     container_name: pyscript
     depends_on:
-      broker:
+      init-kafka:
         condition: service_healthy
