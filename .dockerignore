@@ -4,9 +4,8 @@
 # For more help, visit the .dockerignore file reference guide at
 # https://docs.docker.com/go/build-context-dockerignore/
 
-/allocator_pseudocode.txt
-/cont_kukanov_excerpt.pdf
-/l1_day.csv
+/reference/allocator_pseudocode.txt
+/reference/cont_kukanov_excerpt.pdf
 **/.DS_Store
 **/__pycache__
 **/.venv
