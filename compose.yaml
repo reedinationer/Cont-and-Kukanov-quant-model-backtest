@@ -23,6 +23,7 @@ services:
 
   init-kafka:
     image: confluentinc/cp-kafka:6.1.1
+    container_name: init
     depends_on:
       - broker
     entrypoint: [ '/bin/sh', '-c' ]
@@ -42,5 +43,4 @@ services:
     build: . # Build this project to interact with our kafka broker
     container_name: pyscript
     depends_on:
-      init-kafka:
-        condition: service_healthy
+      - init-kafka
