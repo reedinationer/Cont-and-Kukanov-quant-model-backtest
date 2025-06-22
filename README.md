@@ -1,3 +1,6 @@
+# Video walkthrough
+https://youtu.be/TRjKZs3T9Uk
+
 # EC2 Environment setup
 
 First, generate a new AWS EC2 instance. This README implemented a Ubuntu OS, but the process should be similar for any linux EC2 instance.
