@@ -28,14 +28,13 @@ class OrderAllocator:
 		self.executed = 0
 
 	def allocate(self, S: int):
-		chunk_size = 100 # optimize orders within 100 share chunks
+		chunk_size = 100 # search within 100 share chunks
 		splits = [[]] # store order splits between venues
 		for v in self.venues:
 			new_splits = [] # process the venue and then overwrite `splits`
 			for allocation in splits: # update each allocation in splits
 				max_v = min(v.ask_size, S - sum(splits)) # we can ask for all the shares available at that price, or if we only have a few left to buy just order those
-				for q in range(0, max_v + 1, chunk_size):
-					new_splits.append(allocation + [q])
+				new_splits.append(max_v - max_v % chunk_size)
 			splits = new_splits
 
 		best_cost = np.inf

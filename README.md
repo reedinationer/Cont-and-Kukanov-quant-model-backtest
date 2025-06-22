@@ -48,4 +48,8 @@ Now use docker to build and run the multi container application
 
 # Approach
 
+We are only given the limit order book of a single venue.
+Cont and Kukanov show with Proposition 3 that for a single venue the market order quantity will increase linearly.
+
+
 # Tuning logic
