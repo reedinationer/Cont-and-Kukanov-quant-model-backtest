@@ -33,20 +33,21 @@ class OrderAllocator:
 		for v in self.venues:
 			new_splits = [] # process the venue and then overwrite `splits`
 			for allocation in splits: # update each allocation in splits
-				max_v = min(v.ask_size, S - sum(allocation))
+				max_v = min(v.ask_size, S - sum(*splits))
 				for q in range(0, max_v + 1, chunk_size):
 					new_splits.append(max_v - max_v % 100)
 			splits = new_splits
+		print(f"Splits found as {splits}")
 
 		best_cost = np.inf
 		best_split = []
-		for alloc in splits:
-			if sum(alloc) != S:
+		for split_idx, allocation in enumerate(splits):
+			if sum(splits[:split_idx+1]) != S:
 				continue
-			cost = self.compute_cost(S, alloc)
+			cost = self.compute_cost(S, allocation)
 			if cost < best_cost:
 				best_cost = cost
-				best_split = alloc
+				best_split = allocation
 		return best_split, best_cost
 
 	def compute_cost(self, S, split):
@@ -101,11 +102,10 @@ if __name__ == "__main__":
 				print("ERROR: %s".format(msg.error()))
 			else:
 				data = json.loads(msg.value().decode('utf-8')) # Load update from Kafka, and convert to a dictionary
-				venue_list[0].ask_size = data["ask_sz_00"] # update our venue with current ask information
-				venue_list[0].ask = data["ask_px_00"]
-				print(f"allocation determined as: {sor.allocate(ORDER_SIZE)}")
-				# Extract the key and value, and determine allocation
+				venue_list[0].ask_size = int(data["ask_sz_00"]) # update our venue with current ask information
+				venue_list[0].ask = float(data["ask_px_00"])
 				print(f"Consumed event from topic {msg.topic()}: key = {msg.key().decode('utf-8'):12} value = {msg.value().decode('utf-8'):12}")
+				print(f"allocation determined as: {sor.allocate(ORDER_SIZE)}")
 	except KeyboardInterrupt:
 		pass
 	finally:
