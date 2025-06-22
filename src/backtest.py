@@ -1,66 +1,70 @@
 from kafka_producer import KafkaProducer
 from confluent_kafka import Consumer
 from threading import Thread
+import numpy as np
+import json
 
 KAFKA_SERVER = "broker:9092"
 TOPIC = "mock_l1_stream"
-CSV_FILE = "reference/l1_day.csv"
-
-import csv
-with open(CSV_FILE, "r") as csv_file:
-	reader = csv.DictReader(csv_file)
-	for row in reader:
-		print(row)
-		break
+ORDER_SIZE = 5000
 
 class Venue:
-	def __init__(self, Qk: int, rk: float):
-		self.Qk = Qk # length of queue at each venue
-		self.rk = rk # rebate of this venue
+	def __init__(self, Q=2000, rebate=0.002, fee=0.003): # Page 21 indicates these as typical parameters
+		self.Q = Q # length of queue at each venue
+		self.fee = fee # cost of market orders
+		self.rebate = rebate # rebate for limit orders
+		self.ask = None
+		self.ask_size = None
 
 class OrderAllocator:
-	def __init__(self, venues):
+	def __init__(self, venues: list[Venue]):
 		self.params = { # use parameters from page 21 as baseline
-			"f": 0.003,
-			"h": 0.02,
-			"theta": 0.0005,
+			"h": 0.02, # exogenous spread - one half of bid/ask spread (using value from page 12)
+			"theta": 0.0005, # marginal impact coefficient. (using value from page 12)
 			"del_u": 0.05, # delta under
 			"del_o": 0.05, # delta over
-			"K": len(venues), # number of venues
 		}
 		self.venues = venues
+		self.executed = 0
 
 	def allocate(self, S: int):
 		chunk_size = 100 # optimize orders within 100 share chunks
-		splits = [] # store order splits
+		splits = [[]] # store order splits between venues
 		for v in self.venues:
-			new_splits = []
-			for allocation in splits:
-				used = sum(all)
+			new_splits = [] # process the venue and then overwrite `splits`
+			for allocation in splits: # update each allocation in splits
+				max_v = min(v.ask_size, S - sum(splits)) # we can ask for all the shares available at that price, or if we only have a few left to buy just order those
+				for q in range(0, max_v + 1, chunk_size):
+					new_splits.append(allocation + [q])
+			splits = new_splits
 
-
-	def allocate(self, order_size, venues, λ_over, λ_under, θ_queue):
-	step        ← 100  # search in 100-share chunks
-	splits      ← [[]]  # start with an empty allocation list
-	for v in 0..len(venues) - 1:
-		new_splits ← []
+		best_cost = np.inf
+		best_split = []
 		for alloc in splits:
-			used ← sum(alloc)
-			max_v ← min(order_size - used, venues[v].ask_size)
-			for q in 0..max_v step step:
-				new_splits.append(alloc + [q])
-		splits ← new_splits
+			if sum(alloc) != S:
+				continue
+			cost = self.compute_cost(S, alloc)
+			if cost < best_cost:
+				best_cost = cost
+				best_split = alloc
+		return best_split, best_cost
 
-	best_cost  ← +∞
-	best_split ← []
-	for alloc in splits:
-		if sum(alloc) ≠ order_size: continue
-		cost ← compute_cost(alloc, venues,
-		                    order_size, λ_over, λ_under, θ_queue)
-		if cost < best_cost:
-			best_cost  ← cost
-			best_split ← alloc
-	return best_split, best_cost
+	def compute_cost(self, S, split):
+		cash_spent = 0
+		newly_executed = 0
+		for sub_split, venue in zip(split, self.venues): # loop over each venue and how many shares were allocated to purchase there
+			exe = min(sub_split, venue.ask_size)
+			self.executed += exe
+			cash_spent += exe * (venue.ask + venue.fee)
+			maker_rebate = max(sub_split - exe, 0) * venue.rebate
+			cash_spent -= maker_rebate
+
+		underfill = max(S - newly_executed, 0)
+		overfill = max(newly_executed - S, 0)
+		risk_pen = self.params["theta"] * (underfill + overfill)
+		cost_pen = self.params["del_u"] * underfill + self.params["del_o"] * overfill
+		self.executed += newly_executed
+		return cash_spent + risk_pen + cost_pen
 
 # Consumes stream, applies allocator logic
 class KafkaConsumer:
@@ -83,19 +87,24 @@ def producer_func():
 if __name__ == "__main__":
 	t = Thread(target=producer_func) # Make a process to generate items into Kafka
 	t.start()
+	venue_list = [
+		Venue() # Assuming l1_day.csv reflects one venue only. Use default venue parameters.
+	]
+	sor = OrderAllocator(venue_list) # smart order router
 	kc = KafkaConsumer() # now we consume items as they are generated
 	try:
 		while True:
 			msg = kc.consumer.poll(1.0)
 			if msg is None:
-				# Initial message consumption may take up to
-				# `session.timeout.ms` for the consumer group to
-				# rebalance and start consuming
 				print("Waiting...")
 			elif msg.error():
 				print("ERROR: %s".format(msg.error()))
 			else:
-				# Extract the (optional) key and value, and print.
+				data = json.loads(msg.value().decode('utf-8')) # Load update from Kafka, and convert to a dictionary
+				venue_list[0].ask_size = data["ask_sz_00"] # update our venue with current ask information
+				venue_list[0].ask = data["ask_px_00"]
+				print(f"allocation determined as: {sor.allocate(ORDER_SIZE)}")
+				# Extract the key and value, and determine allocation
 				print(f"Consumed event from topic {msg.topic()}: key = {msg.key().decode('utf-8'):12} value = {msg.value().decode('utf-8'):12}")
 	except KeyboardInterrupt:
 		pass

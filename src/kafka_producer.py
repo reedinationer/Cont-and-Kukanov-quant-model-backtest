@@ -47,7 +47,6 @@ class KafkaProducer:
 					time.sleep(delay.microseconds / 1000000.0) # convert to seconds when calling time.sleep
 					t = new_time
 				if MIN_TIME <= t.time() <= MAX_TIME: # only process orders during specified time
-					# print(row)
 					data = {
 						"publisher_id": row["publisher_id"],
 						"ask_px_00": row["ask_px_00"],

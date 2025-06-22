@@ -26,19 +26,6 @@ Wrap up docker install with adjusting user permissions so docker can be run with
     sudo usermod -aG docker $USER
     newgrp docker
 
-Pull the Kafka image as described in the documentation https://hub.docker.com/r/apache/kafka.
-A Kafka broker can be started with 
-
-    docker run -d --name broker apache/kafka:latest
-
-Next, start a shell inside the container so we can add a topic
-
-    docker exec --workdir /opt/kafka/bin/ -it broker sh
-
-We will create the topic "mock_l1_stream" within our Kafka broker
-
-    ./kafka-topics.sh --bootstrap-server localhost:9092 --create --topic mock_l1_stream
-
 Now we install git and pull the repository
 
     sudo apt install git
@@ -58,7 +45,6 @@ Now use docker to build and run the multi container application
     docker logs broker
     docker logs pyscript --follow
     docker compose down -v
-
 
 # Approach
 
