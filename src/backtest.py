@@ -13,6 +13,55 @@ with open(CSV_FILE, "r") as csv_file:
 		print(row)
 		break
 
+class Venue:
+	def __init__(self, Qk: int, rk: float):
+		self.Qk = Qk # length of queue at each venue
+		self.rk = rk # rebate of this venue
+
+class OrderAllocator:
+	def __init__(self, venues):
+		self.params = { # use parameters from page 21 as baseline
+			"f": 0.003,
+			"h": 0.02,
+			"theta": 0.0005,
+			"del_u": 0.05, # delta under
+			"del_o": 0.05, # delta over
+			"K": len(venues), # number of venues
+		}
+		self.venues = venues
+
+	def allocate(self, S: int):
+		chunk_size = 100 # optimize orders within 100 share chunks
+		splits = [] # store order splits
+		for v in self.venues:
+			new_splits = []
+			for allocation in splits:
+				used = sum(all)
+
+
+	def allocate(self, order_size, venues, λ_over, λ_under, θ_queue):
+	step        ← 100  # search in 100-share chunks
+	splits      ← [[]]  # start with an empty allocation list
+	for v in 0..len(venues) - 1:
+		new_splits ← []
+		for alloc in splits:
+			used ← sum(alloc)
+			max_v ← min(order_size - used, venues[v].ask_size)
+			for q in 0..max_v step step:
+				new_splits.append(alloc + [q])
+		splits ← new_splits
+
+	best_cost  ← +∞
+	best_split ← []
+	for alloc in splits:
+		if sum(alloc) ≠ order_size: continue
+		cost ← compute_cost(alloc, venues,
+		                    order_size, λ_over, λ_under, θ_queue)
+		if cost < best_cost:
+			best_cost  ← cost
+			best_split ← alloc
+	return best_split, best_cost
+
 # Consumes stream, applies allocator logic
 class KafkaConsumer:
 	def __init__(self):
