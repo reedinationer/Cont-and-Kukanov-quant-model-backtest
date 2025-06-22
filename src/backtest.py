@@ -35,14 +35,14 @@ class OrderAllocator:
 			for allocation in splits: # update each allocation in splits
 				max_v = min(v.ask_size, S - sum(*splits))
 				for q in range(0, max_v + 1, chunk_size):
-					new_splits.append(max_v - max_v % 100)
+					new_splits.append([max_v - max_v % 100])
 			splits = new_splits
 		print(f"Splits found as {splits}")
 
 		best_cost = np.inf
 		best_split = []
-		for split_idx, allocation in enumerate(splits):
-			if sum(splits[:split_idx+1]) != S:
+		for split_idx, allocation in enumerate(splits, 1):
+			if sum([x[-1] for x in splits[:split_idx]]) != S:
 				continue
 			cost = self.compute_cost(S, allocation)
 			if cost < best_cost:
