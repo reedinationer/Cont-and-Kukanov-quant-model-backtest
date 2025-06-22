@@ -39,10 +39,14 @@ Now we install git and pull the repository
 
 Now use docker to build and run the multi container application
 
-    docker compose build --with-dependencies    
+    docker compose build --with-dependencies
     docker compose up -d
     docker logs pyscript --follow
-    docker compose down -v
+    docker compose down
+
+Rebuild command for debugging
+
+    docker compose up -d --force-recreate --build pyscript
 
 # Approach
 

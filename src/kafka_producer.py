@@ -21,7 +21,8 @@ def delivery_callback(err, msg):
 	if err:
 		print('ERROR: Message failed delivery: {}'.format(err))
 	else:
-		print(f"Produced event to topic {msg.topic()}: key = {msg.key().decode('utf-8'):12} value = {msg.value().decode('utf-8'):12}")
+		pass
+		# print(f"Produced event to topic {msg.topic()}: key = {msg.key().decode('utf-8'):12} value = {msg.value().decode('utf-8'):12}")
 
 
 class KafkaProducer:
