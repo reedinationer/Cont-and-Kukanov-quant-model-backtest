@@ -41,8 +41,6 @@ Now use docker to build and run the multi container application
 
     docker compose build --with-dependencies    
     docker compose up -d
-    docker logs init
-    docker logs broker
     docker logs pyscript --follow
     docker compose down -v
 

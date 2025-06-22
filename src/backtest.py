@@ -21,8 +21,8 @@ class OrderAllocator:
 		self.params = { # use parameters from page 21 as baseline
 			"h": 0.02, # exogenous spread - one half of bid/ask spread (using value from page 12)
 			"theta": 0.0005, # marginal impact coefficient. (using value from page 12)
-			"del_u": 0.05, # delta under
-			"del_o": 0.05, # delta over
+			"lam_u": 0.05, # delta under
+			"lam_o": 0.05, # delta over
 		}
 		self.venues = venues
 		self.executed = 0
@@ -33,8 +33,9 @@ class OrderAllocator:
 		for v in self.venues:
 			new_splits = [] # process the venue and then overwrite `splits`
 			for allocation in splits: # update each allocation in splits
-				max_v = min(v.ask_size, S - sum(splits)) # we can ask for all the shares available at that price, or if we only have a few left to buy just order those
-				new_splits.append(max_v - max_v % chunk_size)
+				max_v = min(v.ask_size, S - sum(allocation))
+				for q in range(0, max_v + 1, chunk_size):
+					new_splits.append(max_v - max_v % 100)
 			splits = new_splits
 
 		best_cost = np.inf
@@ -61,7 +62,7 @@ class OrderAllocator:
 		underfill = max(S - newly_executed, 0)
 		overfill = max(newly_executed - S, 0)
 		risk_pen = self.params["theta"] * (underfill + overfill)
-		cost_pen = self.params["del_u"] * underfill + self.params["del_o"] * overfill
+		cost_pen = self.params["lam_u"] * underfill + self.params["lam_o"] * overfill
 		self.executed += newly_executed
 		return cash_spent + risk_pen + cost_pen
 
